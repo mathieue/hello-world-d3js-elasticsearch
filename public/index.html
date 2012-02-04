@@ -21,36 +21,36 @@
         shape-rendering: crispEdges;
       }
 
- .chart div {
-   font: 10px sans-serif;
-   background-color: steelblue;
-   text-align: right;
-   padding: 3px;
-   margin: 1px;
-   color: white;
- }
+     .chart div {
+       font: 10px sans-serif;
+       background-color: steelblue;
+       text-align: right;
+       padding: 3px;
+       margin: 1px;
+       color: white;
+     }
     </style>
   </head>
   <body>
-    <script type="text/javascript">
-      w = 30;
+  <script type="text/javascript">
+      w = 10;
       h = 300;
 
-      var year_min = 1000;
+      var year_min = -1000;
       var year_max = 2000;
       var year_size = 25;
       var domain_max = 0;
       var domain_min = 0;
       var data = [];
 
-function initData() {
+  function initData() {
       domain_max = 0;
       domain_min = 0;
       data = [];
       for (var i = year_min; i <= year_max; i = i + year_size) {
         data.push( {"year": i, "count": 0 });
       }
-}
+  }
 
    initData();
 
@@ -141,11 +141,11 @@ function updateHist(data_input) {
 }
 
   var load_data = function(search) {
-    $.ajax({   url: '/es/artdb_staging/work/_search?pretty=true'
+    $.ajax({   url: '/es/artdb/work/_search?pretty=true'
       , type: 'POST'
       //, data : '{ "query" : { "query_string" : {"query" : "picasso"} }}'
       //, data : '{ "query" : { "query_string" : {"query" : "picasso"} },     "facets" : { "tags" : { "terms" : {"field" : "creation.date"} } } }'
-      , data : '{ "query" : { "query_string" : {"query" : "' + search + '"} },     "facets" : { "size": 10000, "tags" : { "terms" : {"field" : "creation_year", "size": 10000} } } }'
+      , data : '{ "query" : { "query_string" : {"query" : "' + search + '"} },     "facets" : { "size": 10000, "tags" : { "terms" : {"field" : "creation.date", "size": 10000} } } }'
       , dataType : 'json'
       , processData: false
       , success: function(json, statusText, xhr) {
