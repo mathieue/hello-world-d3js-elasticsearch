@@ -101,6 +101,7 @@ function updateHist(data_input) {
       .attr("width", w)
       .attr("height", function(d) { return y(d.count); });
 
+/*
  var texts = chart.selectAll(".label")
     .data(data);
     texts.enter().append('text')
@@ -111,7 +112,6 @@ function updateHist(data_input) {
       .attr("text-anchor", "middle")
       .attr("height", function(d) { return y(d.count); })
       .text(function(d) { if (d.count > 0) { return d.count;} return ''; });
-
  var years = chart.selectAll(".year")
     .data(data);
     years.enter().append('text')
@@ -122,16 +122,17 @@ function updateHist(data_input) {
       .attr("text-anchor", "middle")
       .attr("height", function(d) { return 20; })
       .text(function(d) { return d.year; });
-    
+*/  
     hist.transition()
       .duration(500)
       .attr("y", function(d) { return h - y(d.count) - .5; })
       .attr("height", function(d) { return y(d.count); });
-
+/*
     texts.transition()
       .attr("y", function(d) { return h - y(d.count) - .5 + 10; })
       .attr("height", function(d) { return y(d.count); })
-      .text(function(d) { if (d.count > 0) { return d.count;} return ''; });
+    .text(function(d) { if (d.count > 0) { return d.count;} return ''; });
+*/
 
     hist.exit()
         .remove();
