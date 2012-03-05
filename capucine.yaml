@@ -1,0 +1,11 @@
+sass_enable: false
+coffeescript_enable: true
+templates_enable: false
+
+
+coffeescript_options: {bare: true}
+coffeescript_files_dir: 'coffeescript'
+coffeescript_output_dir: 'public/js/generated'
+
+# DOCUMENTATION :
+# http:// capucine.dln.name
