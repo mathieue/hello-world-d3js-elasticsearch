@@ -2,27 +2,29 @@ var esdata;
 var w = 30;       // bar width
 var h = 500;      // bar height
 
-var year_min = 0;
-var year_max = 2000;
-var year_size = 50;
-
-var domain_max = 0; //max value data
-var domain_min = 0; // min value data
-
-var data = [];
-
-
-
 function createSVG() {
     var chart = d3.select("body").append("svg")
         .attr("class", "chart")
-        .attr("width", w * esdata.data.length - 1)
-        .attr("height", h + 60);
+        .attr("width", w * 40 - 1)
+        .attr("height", h + 160);
+
+    chart.append("text")
+        .attr("id", "maintext")
+        .attr("y", 80);
+
+    chart.append("text")
+        .attr("id", "legend")
+        .attr("y", 550)
+        .text("Artworks by years");
 }
 
-function updateHist() {
+function redraw(search) {
     var chart = d3.select("body").select("svg")
-        var data =esdata.data;
+    var data = esdata.data;
+
+    d3.select("#maintext")
+        .text(search + " : " + esdata.hits + " hits fetched in " + esdata.took + " ms");
+
     var x = d3.scale.linear()
         .domain([0, 1])
         .range([0, w]);
@@ -40,8 +42,17 @@ function updateHist() {
         .attr("width", w)
         .attr("height", function(d) { return y(d.count); });
 
+    hist.transition()
+        .duration(500)
+        .attr("y", function(d) { return h - y(d.count) - .5; })
+        .attr("height", function(d) { return y(d.count); });
+
+    hist.exit()
+        .remove();
+
     var texts = chart.selectAll(".label")
         .data(data);
+
     texts.enter().append('text')
         .attr("class", "label")
         .attr("x", function(d, i) { return x(i) - 1 + w / 2; })
@@ -51,6 +62,14 @@ function updateHist() {
         .attr("text-anchor", "middle")
         .attr("height", function(d) { return y(d.count); })
         .text(function(d) { if (d.count > 0) { return d.count;} return ''; });
+
+    texts.transition()
+        .attr("y", function(d) { return h - y(d.count) - .5 - 10; })
+        .attr("height", function(d) { return y(d.count); })
+        .text(function(d) { if (d.count > 0) { return d.count;} return ''; });
+
+    texts.exit()
+        .remove();
 
     var years = chart.selectAll(".year")
         .data(data);
@@ -63,31 +82,16 @@ function updateHist() {
         .attr("height", function(d) { return 20; })
         .text(function(d) { return d.year; });
 
-    hist.transition()
-        .duration(500)
-        .attr("y", function(d) { return h - y(d.count) - .5; })
-        .attr("height", function(d) { return y(d.count); });
-
-    texts.transition()
-        .attr("y", function(d) { return h - y(d.count) - .5 - 10; })
-        .attr("height", function(d) { return y(d.count); })
-        .text(function(d) { if (d.count > 0) { return d.count;} return ''; });
-
-    hist.exit()
-        .remove();
-    texts.exit()
-        .remove();
-
 }
 
 var load_data = function(search) {
-    $.ajax({   url: '/es/artdb/work/_search?pretty=true'
+    $.ajax({   url: '/search'
         , type: 'POST'
-        , data : '{ "query" : { "query_string" : {"query" : "' + search + '"} },     "facets" : { "size": 10000, "tags" : { "terms" : {"field" : "creation.date", "size": 10000} } } }'
+        , data : '{ "query" : { "query_string" : {"query" : "' + search + '"} },     "facets" : {  "tags" : { "terms" : {"field" : "creation.date", "size": 100000000} },"continent" : { "terms" : {"field" : "creation.continent", "size": 100000000} } } }'
         , dataType : 'json'
         , processData: false
         , success: function(json, statusText, xhr) {
-            return display_chart(json);
+            return display_chart(json, search);
         }
     , error: function(xhr, message, error) {
         console.error("Error while loading data from ElasticSearch", message);
@@ -95,9 +99,9 @@ var load_data = function(search) {
     }
     });
 
-    var display_chart = function(json) {
+    var display_chart = function(json, search) {
         esdata.mapData(json);
-        updateHist();
+        redraw(search);
     };
 
 };
