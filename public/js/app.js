@@ -11,53 +11,24 @@ var domain_min = 0; // min value data
 
 var data = [];
 
-function initData() {
-    domain_max = 0;
-    domain_min = 0;
-    data = [];
-    for (var i = year_min; i <= year_max; i = i + year_size) {
-        data.push( {"year": i, "count": 0 });
-    }
-}
 
-initData();
 
-function mapData(data_input) {
-    initData();
-    for (var i= 0; i < data_input.length; ++i) {
-        var input = data_input[i];
-        for (var j= 0; j < data.length; ++j) {
-            var input_date = parseInt(input.term);
-            var range_date = parseInt(data[j].year);
-            if ((input_date  < (range_date + year_size)) && (input_date >= range_date)) {
-                data[j].count += input.count;
-                if (data[j].count > domain_max) {
-                    domain_max = data[j].count;
-                }
-            }
-        }
-    }
-    return data;
-}
-
-function initHist() {
-    var data = mapData([]);
+function createSVG() {
     var chart = d3.select("body").append("svg")
         .attr("class", "chart")
-        .attr("width", w * data.length - 1)
+        .attr("width", w * esdata.data.length - 1)
         .attr("height", h + 60);
 }
 
-function updateHist(data_input) {
-    //console.log(data_input);
+function updateHist() {
     var chart = d3.select("body").select("svg")
-        var data = mapData(data_input);
+        var data =esdata.data;
     var x = d3.scale.linear()
         .domain([0, 1])
         .range([0, w]);
 
     var y = d3.scale.linear()
-        .domain([0, domain_max])
+        .domain([0, esdata.domain_max])
         .rangeRound([0, h - 30]);
 
     var hist = chart.selectAll("rect")
@@ -126,16 +97,18 @@ var load_data = function(search) {
 
     var display_chart = function(json) {
         esdata.mapData(json);
-        updateHist(json.facets.tags.terms);
+        updateHist();
     };
 
 };
 
 $( function() { 
     esdata = new ESData
-    initHist();
+    createSVG();
     $('#search').keyup(function() {
-        load_data($(this).val());
+        if ($(this).val() != '') {
+            load_data($(this).val());
+        }
     });
     load_data($('#search').val());
 });

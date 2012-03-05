@@ -13,14 +13,18 @@ class ESData
     @domain_min = 0
     @domain_max =0
     @data = []
-    @data.push {"year": i, "count": 0} for i in [@year_min..@year_max]
+    @data.push {"year": i, "count": 0} for i in [@year_min..@year_max] by @year_size
 
   mapData: (esjson)->
     @init()
+
     console.log esjson
+
     @took = esjson.took
     @hits = esjson.hits.total
+
     console.log "#{@hits} hits took #{@took} ms"
+
     data_input = esjson.facets.tags.terms
     for input in data_input
       for data in @data
@@ -29,3 +33,4 @@ class ESData
         if (input_date < (range_date  + @year_size)) && (input_date >= range_date)
           data.count += input.count
           @domain_max = data.count if data.count > @domain_max
+    console.log @data
