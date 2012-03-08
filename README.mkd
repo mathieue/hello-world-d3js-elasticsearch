@@ -1,0 +1,13 @@
+# data vizualisation hello world with d3.js + sinatra + elasticsearch
+
+Presentation at [bordeaux ruby user group](http://rubybdx.org/).
+
+[video screencast on my blog](http://www.mathieu-elie.net/screencast-video-d3-js-sinatra-elasticsearch-capucine/).
+
+This demo use:
+ - [d3.js](http://mbostock.github.com/d3/) a dataviz lib build upon svg markup.
+ - [sinatra](http://www.sinatrarb.com/) micro web framework ruby
+ - [elasticsearch](http://www.elasticsearch.org/) scalable search engine
+ - [capucine](http://capucine.dln.name/)  coffescript / saas / compass watcher compiler on the rocks
+
+Get about infos on my tech blog http://www.mathieu-elie.net
